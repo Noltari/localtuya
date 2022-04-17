@@ -839,11 +839,18 @@ class TuyaProtocol(asyncio.Protocol, ContextualLogger):
             dp_index(int):   dps index to set
             value: new value for the dps index
         """
+        self.debug("set_dp: %s = %s", dp_index, value)
         return await self.exchange(CONTROL, {str(dp_index): value})
 
     async def set_dps(self, dps):
         """Set values for a set of datapoints."""
-        return await self.exchange(CONTROL, dps)
+        self.debug("set_dps: %s", dps)
+        first_dp = True
+        for key, value in dps.items():
+            if not first_dp:
+                await asyncio.sleep(0.5)
+            await self.set_dp(value, key)
+            first_dp = False
 
     async def detect_available_dps(self):
         """Return which datapoints are supported by the device."""
