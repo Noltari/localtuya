@@ -151,7 +151,7 @@ class LocaltuyaFan(LocalTuyaEntity, FanEntity):
 
             else:
                 await self._device.set_dp(
-                    str(
+                    int(
                         math.ceil(
                             percentage_to_ranged_value(self._speed_range, percentage)
                         )
